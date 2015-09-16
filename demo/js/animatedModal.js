@@ -32,10 +32,8 @@
             beforeOpen: function() {},           
             afterOpen: function() {}, 
             beforeClose: function() {}, 
-            afterClose: function() {}
- 
-            
-
+            afterClose: function() {},
+            override: false
         }, options);
         
         var closeBt = $('.close-'+settings.modalTarget);
@@ -66,26 +64,12 @@
         //Apply stles
         id.css(initStyles);
 
-        modal.click(function(event) {       
-            event.preventDefault();
-            $('body, html').css({'overflow':'hidden'});
-            if (href == idConc) {
-                if (id.hasClass(settings.modalTarget+'-off')) {
-                    id.removeClass(settings.animatedOut);
-                    id.removeClass(settings.modalTarget+'-off');
-                    id.addClass(settings.modalTarget+'-on');
-                } 
-
-                 if (id.hasClass(settings.modalTarget+'-on')) {
-                    settings.beforeOpen();
-                    id.css({'opacity':settings.opacityIn,'z-index':settings.zIndexIn});
-                    id.addClass(settings.animatedIn);  
-                    id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterOpen);
-                };  
-            } 
-        });
-
-
+        if (!settings.override) {
+            modal.click(function(event) {
+                event.preventDefault();
+                open();
+            });
+        }
 
         closeBt.click(function(event) {
             event.preventDefault();
@@ -114,6 +98,27 @@
             settings.afterOpen(); //afterOpen
         }
 
+        function open() {
+            $('body, html').css({'overflow':'hidden'});
+            if (href == idConc) {
+                if (id.hasClass(settings.modalTarget+'-off')) {
+                    id.removeClass(settings.animatedOut);
+                    id.removeClass(settings.modalTarget+'-off');
+                    id.addClass(settings.modalTarget+'-on');
+                }
+
+                if (id.hasClass(settings.modalTarget+'-on')) {
+                    settings.beforeOpen();
+                    id.css({'opacity':settings.opacityIn,'z-index':settings.zIndexIn});
+                    id.addClass(settings.animatedIn);
+                    id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterOpen);
+                };
+            }
+        }
+
+        return {
+            open: open
+        };
     }; // End animatedModal.js
 
 }(jQuery));
