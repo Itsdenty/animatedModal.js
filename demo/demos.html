@@ -23,15 +23,15 @@
             <li><a id="demo01" href="#animatedModal">DEMO01</a></li>
             <li><a id="demo02" href="#modal-02">DEMO02</a></li>
         </ul>
-      
-      
+
+
         <!--DEMO01-->
         <div id="animatedModal">
             <!--THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID -->
-            <div  id="btn-close-modal" class="close-animatedModal"> 
+            <div  id="btn-close-modal" class="close-animatedModal">
                 CLOSE MODAL
             </div>
-                
+
             <div class="modal-content">
                 <!--Your modal content goes here-->
             </div>
@@ -40,10 +40,10 @@
         <!--DEMO02-->
         <div id="modal-02">
             <!--"THIS IS IMPORTANT! to close the modal, the class name has to match the name given on the ID-->
-            <div  id="btn-close-modal" class="close-modal-02"> 
+            <div  id="btn-close-modal" class="close-modal-02">
                 CLOSE MODAL
             </div>
-            
+
             <div class="modal-content">
                 <!--Your modal content goes here-->
             </div>
@@ -51,11 +51,24 @@
 
 
         <script src="js/jquery.min.js"></script>
-        <script src="js/animatedModal.min.js"></script>
+        <script src="js/animatedModal.js"></script>
         <script>
 
             //demo 01
-            $("#demo01").animatedModal();
+            $("#demo01").animatedModal({
+                beforeOpen: function() {
+                    console.log(this, arguments);
+                },
+                afterOpen: function() {
+                    console.log(this, arguments);
+                },
+                beforeClose: function() {
+                    console.log(this, arguments);
+                },
+                afterClose: function() {
+                    console.log(this, arguments);
+                }
+            });
 
             //demo 02
             $("#demo02").animatedModal({
@@ -66,13 +79,13 @@
                 // Callbacks
                 beforeOpen: function() {
                     console.log("The animation was called");
-                },           
+                },
                 afterOpen: function() {
                     console.log("The animation is completed");
-                }, 
+                },
                 beforeClose: function() {
                     console.log("The animation was called");
-                }, 
+                },
                 afterClose: function() {
                     console.log("The animation is completed");
                 }
