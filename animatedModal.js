@@ -135,13 +135,3 @@
 
   }; // End animatedModal.js
 });
-
-(function ($) {
-
-
-
-}(jQuery));
-
-
-
-
