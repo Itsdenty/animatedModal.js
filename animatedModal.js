@@ -1,60 +1,76 @@
-/*=========================================
- * animatedModal.js: Version 1.0
- * author: João Pereira
- * website: http://www.joaopereira.pt
- * email: joaopereirawd@gmail.com
- * Licensed MIT
-=========================================*/
+(function(factory) {
 
-(function ($) {
+  // Establish the root object, `window` (`self`) in the browser, or `global` on the server.
+  // We use `self` instead of `window` for `WebWorker` support.
+  var root = (typeof self == 'object' && self.self === self && self) ||
+      (typeof global == 'object' && global.global === global && global);
 
-    $.fn.animatedModal = function(options) {
-        var modal = $(this),
-            currentContext = this;
+  // Set up Backbone appropriately for the environment. Start with AMD.
+  if (typeof define === 'function' && define.amd) {
+    define(['underscore', 'jquery', 'exports'], function(_, $, exports) {
+      // Export global even in AMD case in case this script is loaded with
+      // others that may still expect a global Backbone.
+      root.Backbone = factory(root, $);
+    });
 
-        //Defaults
-        var settings = $.extend({
-            modalTarget:'animatedModal',
-            position:'fixed',
-            width:'100%',
-            height:'100%',
-            top:'0px',
-            left:'0px',
-            zIndexIn: '9999',
-            zIndexOut: '-9999',
-            color: '#39BEB9',
-            opacityIn:'1',
-            opacityOut:'0',
-            animatedIn:'zoomIn',
-            animatedOut:'zoomOut',
-            animationDuration:'.6s',
-            overflow:'auto',
-            // Callbacks
-            beforeOpen: function() {},
-            afterOpen: function() {},
-            beforeClose: function() {},
-            afterClose: function() {}
+  // Next for Node.js or CommonJS. jQuery may not be needed as a module.
+  } else if (typeof exports !== 'undefined') {
+    var _ = require('underscore'), $;
+    try { $ = require('jquery'); } catch (e) {}
+    factory(root, $);
 
-        }, options);
+  // Finally, as a browser global.
+  } else {
+    root.$animatedModal = factory(root, (root.jQuery || root.Zepto || root.ender || root.$));
+  }
+})(function(window, $) {
+  $.fn.animatedModal = function(options) {
+    var modal = $(this),
+      currentContext = this;
 
-        var closeBt = $('.close-'+settings.modalTarget);
+      //Defaults
+      var settings = $.extend({
+        modalTarget:'animatedModal',
+        position:'fixed',
+        width:'100%',
+        height:'100%',
+        top:'0px',
+        left:'0px',
+        zIndexIn: '9999',
+        zIndexOut: '-9999',
+        color: '#39BEB9',
+        opacityIn:'1',
+        opacityOut:'0',
+        animatedIn:'zoomIn',
+        animatedOut:'zoomOut',
+        animationDuration:'.6s',
+        overflow:'auto',
+        // Callbacks
+        beforeOpen: function() {},
+        afterOpen: function() {},
+        beforeClose: function() {},
+        afterClose: function() {}
 
-        ['beforeOpen', 'afterOpen', 'beforeClose', 'afterClose'].forEach(function(key) {
-          if (key in settings) {
-            settings[key] = settings[key].bind(this);
-          }
-        }, this);
+      }, options);
 
-        var href = $(modal).attr('href'),
-            id = $('body').find('#'+settings.modalTarget),
-            idConc = '#'+id.attr('id');
+      var closeBt = $('.close-'+settings.modalTarget);
 
-            // Default Classes
-            id.addClass('animated');
-            id.addClass(settings.modalTarget+'-off');
+      ['beforeOpen', 'afterOpen', 'beforeClose', 'afterClose'].forEach(function(key) {
+        if (key in settings) {
+          settings[key] = settings[key].bind(this);
+        }
+      }, this);
 
-        //Init styles
-        var initStyles = {
+      var href = $(modal).attr('href'),
+        id = $('body').find('#'+settings.modalTarget),
+          idConc = '#'+id.attr('id');
+
+          // Default Classes
+          id.addClass('animated');
+          id.addClass(settings.modalTarget+'-off');
+
+          //Init styles
+          var initStyles = {
             'position':settings.position,
             'width':settings.width,
             'height':settings.height,
@@ -65,59 +81,64 @@
             'z-index':settings.zIndexOut,
             'opacity':settings.opacityOut,
             '-webkit-animation-duration':settings.animationDuration
-        };
-        //Apply stles
-        id.css(initStyles);
+          };
+          //Apply stles
+          id.css(initStyles);
 
-        modal.click(function(event) {
+          modal.click(function(event) {
             event.preventDefault();
             $('body, html').css({'overflow':'hidden'});
             if (href == idConc) {
-                if (id.hasClass(settings.modalTarget+'-off')) {
-                    id.removeClass(settings.animatedOut);
-                    id.removeClass(settings.modalTarget+'-off');
-                    id.addClass(settings.modalTarget+'-on');
-                }
+              if (id.hasClass(settings.modalTarget+'-off')) {
+                id.removeClass(settings.animatedOut);
+                id.removeClass(settings.modalTarget+'-off');
+                id.addClass(settings.modalTarget+'-on');
+              }
 
-                 if (id.hasClass(settings.modalTarget+'-on')) {
-                    settings.beforeOpen(id);
-                    id.css({'opacity':settings.opacityIn,'z-index':settings.zIndexIn});
-                    id.addClass(settings.animatedIn);
-                    id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterOpen);
-                };
+              if (id.hasClass(settings.modalTarget+'-on')) {
+                settings.beforeOpen(id);
+                id.css({'opacity':settings.opacityIn,'z-index':settings.zIndexIn});
+                id.addClass(settings.animatedIn);
+                id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterOpen);
+              };
             }
-        });
+          });
 
 
 
-        closeBt.click(function(event) {
+          closeBt.click(function(event) {
             event.preventDefault();
             $('body, html').css({'overflow':'auto'});
 
             settings.beforeClose(id); //beforeClose
             if (id.hasClass(settings.modalTarget+'-on')) {
-                id.removeClass(settings.modalTarget+'-on');
-                id.addClass(settings.modalTarget+'-off');
+              id.removeClass(settings.modalTarget+'-on');
+              id.addClass(settings.modalTarget+'-off');
             }
 
             if (id.hasClass(settings.modalTarget+'-off')) {
-                id.removeClass(settings.animatedIn);
-                id.addClass(settings.animatedOut);
-                id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterClose);
+              id.removeClass(settings.animatedIn);
+              id.addClass(settings.animatedOut);
+              id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterClose);
             };
 
-        });
+          });
 
-        function afterClose () {
+          function afterClose () {
             id.css({'z-index':settings.zIndexOut});
             settings.afterClose(id); //afterClose
-        }
+          }
 
-        function afterOpen () {
+          function afterOpen () {
             settings.afterOpen(id); //afterOpen
-        }
+          }
 
-    }; // End animatedModal.js
+  }; // End animatedModal.js
+});
+
+(function ($) {
+
+
 
 }(jQuery));
 
