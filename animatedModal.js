@@ -51,12 +51,14 @@
           modal.click(function(event) {
             event.preventDefault();
             $('body, html').css({'overflow':'hidden'});
+
             if (href == idConc) {
               if (id.hasClass(settings.modalTarget+'-off')) {
                 id.removeClass(settings.modalTarget+'-off');
                 id.addClass(settings.modalTarget+'-on');
                 id.removeClass('animated-off');
                 id.addClass('animated-on');
+                id.removeClass(settings.animatedOut);
               }
 
               if (id.hasClass(settings.modalTarget+'-on')) {
@@ -69,7 +71,9 @@
 
           closeBt.click(function(event) {
             event.preventDefault();
-            $('body, html').css({'overflow':'auto'});
+            $('body, html').each(function(element) {
+              element[0].removeAttribute('style');
+            });
 
             settings.beforeClose(id); //beforeClose
             if (id.hasClass(settings.modalTarget+'-on')) {
