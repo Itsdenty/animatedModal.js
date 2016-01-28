@@ -71,9 +71,7 @@
 
           closeBt.click(function(event) {
             event.preventDefault();
-            $('body, html').each(function(element) {
-              element[0].removeAttribute('style');
-            });
+            $('body, html').removeAttr('style');
 
             settings.beforeClose(id); //beforeClose
             if (id.hasClass(settings.modalTarget+'-on')) {
