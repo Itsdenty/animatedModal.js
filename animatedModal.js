@@ -55,6 +55,7 @@
               if (id.hasClass(settings.modalTarget+'-off')) {
                 id.removeClass(settings.modalTarget+'-off');
                 id.addClass(settings.modalTarget+'-on');
+                id.removeClass('animated-off');
                 id.addClass('animated-on');
               }
 
