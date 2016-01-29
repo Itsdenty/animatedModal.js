@@ -27,7 +27,7 @@
         beforeOpen: function() {},
         afterOpen: function() {},
         beforeClose: function() {},
-        afterClose: function() {}
+        afterClose: function() {},
         zoomOutTimeout: 1
       }, options);
 
