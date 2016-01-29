@@ -85,7 +85,7 @@
                 id.removeClass('animated-on');
                 id.addClass(settings.modalTarget+'-off');
                 id.addClass('animated-off');
-              }, settings.zoomOutTimeout);
+              }, (settings.zoomOutTimeout * 1000));
             }
           });
 
