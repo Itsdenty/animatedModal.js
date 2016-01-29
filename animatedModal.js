@@ -28,7 +28,7 @@
         afterOpen: function() {},
         beforeClose: function() {},
         afterClose: function() {}
-
+        zoomOutTimeout: 1
       }, options);
 
       var closeBt = $('.close-'+settings.modalTarget);
@@ -75,17 +75,18 @@
 
             settings.beforeClose(id); //beforeClose
             if (id.hasClass(settings.modalTarget+'-on')) {
-              id.removeClass(settings.modalTarget+'-on');
-              id.addClass(settings.modalTarget+'-off');
-              id.removeClass('animated-on');
-              id.addClass('animated-off');
-            }
-
-            if (id.hasClass(settings.modalTarget+'-off')) {
+              // HOTFIX
               id.removeClass(settings.animatedIn);
               id.addClass(settings.animatedOut);
               id.one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', afterClose);
-            };
+
+              setTimeout(function() {
+                id.removeClass(settings.modalTarget+'-on');
+                id.removeClass('animated-on');
+                id.addClass(settings.modalTarget+'-off');
+                id.addClass('animated-off');
+              }, settings.zoomOutTimeout);
+            }
           });
 
           function afterClose () {
