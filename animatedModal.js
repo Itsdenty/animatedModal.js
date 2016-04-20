@@ -4,12 +4,12 @@
   var root = (typeof self == 'object' && self.self === self && self) ||
     (typeof global == 'object' && global.global === global && global);
 
-    // Set up Backbone appropriately for the environment. Start with AMD.
+    // Set up animatedModal appropriately for the environment. Start with AMD.
     if (typeof define === 'function' && define.amd) {
       define(['underscore', 'jquery', 'exports'], function(_, $, exports) {
         // Export global even in AMD case in case this script is loaded with
-        // others that may still expect a global Backbone.
-        root.Backbone = factory(root, $);
+        // others that may still expect a global animatedModal.
+        root.animatedModal = factory(root, $);
       });
 
       // Next for Node.js or CommonJS. jQuery may not be needed as a module.
@@ -84,9 +84,9 @@
       //Apply styles
       id.css(initStyles);
 
-      function openModal(event) {
-        event.preventDefault();
+      function openModal() {
         $('body, html').css({'overflow':'hidden'});
+
         if (href == idConc) {
           if (id.hasClass(settings.modalTarget+'-off')) {
             id.removeClass(settings.animatedOut);
@@ -103,8 +103,7 @@
         }
       }
 
-      function closeModal(event) {
-        event.preventDefault();
+      function closeModal() {
         $('body, html').css({'overflow':'auto'});
 
         settings.beforeClose(id); //beforeClose
@@ -120,8 +119,19 @@
         };
       }
 
-      modal.click(openModal);
-      closeBt.click(closeModal);
+      modal.click(function(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();
+        }
+        openModal();
+      });
+
+      closeBt.click(function(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();
+        }
+        closeModal();
+      });
 
       function afterClose () {
         id.css({'z-index':settings.zIndexOut});
